@@ -131,7 +131,84 @@ OneTimeSecret - Perl interface to OneTimeSecret.com API
 See https://onetimesecret.com if you don't know how it works or what it's
 for.
 
-=head2 FEATURES
+To use, you create an api object by instantiating a OneTimeSecret using
+your customer id (which is the email address with which you signed up
+for your API account) and your api key (which you need to generate at
+https://onetimesecret.com).
+
+=head2 METHODS
+
+shareSecret
+
+ my $response = $api->shareSecret( <secret>, [options] );
+
+where options can be
+
+=over
+
+=item recipient => <email address>
+
+This will send recipient an email notifying them that there is a secret
+for them to collect
+
+=item passphrase => <passphrase>
+
+A passphrase that the recipient will need to know in order to retrieve
+the secret
+
+=item ttl => <seconds>
+
+How long the secret will last
+
+It will return a hash like this:
+
+ {
+   "custid": <this is you>,
+   "value": <secret>,
+   "metadata_key": <metadata key>,
+   "secret_key": <secret key>,
+   "ttl": <seconds>,
+   "updated": <utc>,
+   "created": <utc>
+ }
+
+=back
+
+retrieveSecret
+
+ my $response = $api->retrieveSecret( <secret>, [ passphrase => <passphrase> ] );
+
+where options can be
+
+=over
+
+=item passphrase => <passphrase>
+
+A passphrase that the recipient will need to know in order to retrieve
+the secret
+
+=back
+
+It will return a hash like this:
+
+ {
+   "custid": <this is you>,
+   "value": <secret>,
+   "metadata_key": <metadata key>,
+   "secret_key": <secret key>,
+   "ttl": <seconds>,
+   "updated": <utc>,
+   "created": <utc>
+ }
+
+
+
+generateSecret
+
+retrieveMetadata
+
+
+=head1 FEATURES
 
 =over
 
@@ -151,7 +228,10 @@ with encoding or decoding of JSON.
 
 =over
 
-=item too many things to list
+=item * Error handling
+
+Right now you're on your own to test for errors and trap explosions.
+
 
 =back
 
