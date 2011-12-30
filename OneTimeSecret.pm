@@ -6,6 +6,7 @@ use common::sense;
 use JSON;
 use LWP::UserAgent;
 use URI::Escape;
+use Encode qw( encode_utf8 decode_utf8 );
 
 my $_USER_AGENT  = LWP::UserAgent->new();
 my $_API_VERSION = "v1";
@@ -44,9 +45,8 @@ sub _post {
     foreach my $key (keys %$data) {
         delete $data->{$key} unless defined $data->{$key};
     }
-    # print STDERR "Posting to $url with ".Dumper($data);
-    my $response = $_USER_AGENT->post( $url, $data );
-    return from_json( $response->decoded_content );
+    my $response = $_USER_AGENT->post( $url, 'Content' => $data );
+    return from_json( decode_utf8( $response->decoded_content ) );
 }
 
 sub _get {
@@ -84,14 +84,11 @@ sub retrieveSecret {
     my $self = shift;
     my $key = shift;
     my $options = { @_ };
-
     return $self->_post( $self->__url_for( sprintf("/secret/%s", $key) ) );
 }
 
 sub retrieveMetadata {
-    my $self = shift;
-    my $key = shift;
-
+    my ($self, $key) = @_;
     return $self->_post( $self->__url_for( sprintf("/private/%s", $key) ) );
 }
 
@@ -143,6 +140,10 @@ for.
 You have full access to arguments and returned values for all the
 REST API calls.
 
+=item * Transparent
+
+You call it with Perl data, and get back Perl data.  No messing
+with encoding or decoding of JSON.
 
 =back
 

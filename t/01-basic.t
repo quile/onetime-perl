@@ -1,9 +1,10 @@
 #!/usr/bin/env perl
 
 use OneTimeSecret;
+use utf8;
 
 use common::sense;
-use Test::More tests => 7;
+use Test::More tests => 10;
 
 
 my $customerId  = 'apitest-perl@onetimesecret.com';
@@ -34,3 +35,15 @@ ok( !exists $retrievedAgain->{value} && $retrievedAgain->{message} eq "Unknown s
 
 my $metadata = $api->retrieveMetadata( $metadataKey );
 ok( $metadata && $metadata->{created}, "Metadata retrieved" );
+
+
+# Let's try some unicode
+my $unicode = $api->shareSecret( "˙sʃǝǝ ɟo ʃʃnɟ sı ʇɟɐɹɔɹǝʌoɥ ʎW" );
+ok( $unicode && $unicode->{created}, "Created shared secret from unicode.");
+
+my $ru = $api->retrieveSecret( $unicode->{secret_key} );
+ok( $ru && $ru->{value} eq "˙sʃǝǝ ɟo ʃʃnɟ sı ʇɟɐɹɔɹǝʌoɥ ʎW", "Retrieved unicode secret." );
+#diag Dumper($ru);
+
+$ru = $api->retrieveSecret( $unicode->{secret_key} );
+ok( $ru && $ru->{message} eq "Unknown secret", "Couldn't retrieve secret twice." );
