@@ -126,6 +126,22 @@ OneTimeSecret - Perl interface to OneTimeSecret.com API
     0.01
 
 
+=head1 FEATURES
+
+=over
+
+=item * Very thin wrapper
+
+You have full access to arguments and returned values for all the
+REST API calls.
+
+=item * Transparent
+
+You call it with Perl data, and get back Perl data.  No messing
+with encoding or decoding of JSON.
+
+=back
+
 =head1 DESCRIPTION
 
 See https://onetimesecret.com if you don't know how it works or what it's
@@ -138,7 +154,13 @@ https://onetimesecret.com).
 
 =head2 METHODS
 
-shareSecret
+=head3 status
+
+ my $response = $api->status();
+
+If $response->{status} is equal to "nominal" then the system is up.
+
+=head3 shareSecret
 
  my $response = $api->shareSecret( <secret>, [options] );
 
@@ -160,6 +182,8 @@ the secret
 
 How long the secret will last
 
+=back
+
 It will return a hash like this:
 
  {
@@ -172,13 +196,11 @@ It will return a hash like this:
    "created": <utc>
  }
 
-=back
-
-retrieveSecret
+=head3 retrieveSecret
 
  my $response = $api->retrieveSecret( <secret>, [ passphrase => <passphrase> ] );
 
-where options can be
+There is only one possible option:
 
 =over
 
@@ -202,27 +224,61 @@ It will return a hash like this:
  }
 
 
+=head3 generateSecret
 
-generateSecret
+This generates a secret (useful for creating passwords, ids, etc) that
+can be viewed only once.
 
-retrieveMetadata
+ my $response = $api->generateSecret( [options] );
 
-
-=head1 FEATURES
+where options can be
 
 =over
 
-=item * Very thin wrapper
+=item recipient => <email address>
 
-You have full access to arguments and returned values for all the
-REST API calls.
+This will send recipient an email notifying them that there is a secret
+for them to collect
 
-=item * Transparent
+=item passphrase => <passphrase>
 
-You call it with Perl data, and get back Perl data.  No messing
-with encoding or decoding of JSON.
+A passphrase that the recipient will need to know in order to retrieve
+the secret
+
+=item ttl => <seconds>
+
+How long the secret will last
 
 =back
+
+It will return a hash like this:
+
+ {
+   "custid": <this is you>,
+   "value": <secret>,
+   "metadata_key": <metadata key>,
+   "secret_key": <secret key>,
+   "ttl": <seconds>,
+   "updated": <utc>,
+   "created": <utc>
+ }
+
+=head3 retrieveMetadata
+
+
+ my $response = $api->retrieveMetadata( <metadata_key> );
+
+It will return a hash like this:
+
+ {
+   "custid": <this is you>,
+   "metadata_key": <metadata key>,
+   "secret_key": <secret key>,
+   "ttl": <seconds>,
+   "updated": <utc>,
+   "created": <utc>
+ }
+
 
 =head1 TODO
 
@@ -231,6 +287,12 @@ with encoding or decoding of JSON.
 =item * Error handling
 
 Right now you're on your own to test for errors and trap explosions.
+
+=item * Bulletproofing
+
+There are lots of cases that could have slipped through the cracks, so it
+will need some cleaning up and bulletproofing to harden it a bit.
+
 
 
 =back
