@@ -1,16 +1,17 @@
 #!/usr/bin/env perl
 
-use OneTimeSecret;
+use lib 'lib';
+
+use Net::OneTimeSecret;
 use utf8;
 
 use common::sense;
 use Test::More tests => 10;
 
-
 my $customerId  = 'apitest-perl@onetimesecret.com';
 my $testApiKey  = 'df0de769899e5464cb70754ea4494aec1b7de7fb';
 
-my $api = OneTimeSecret->new( $customerId, $testApiKey );
+my $api = Net::OneTimeSecret->new( $customerId, $testApiKey );
 
 my $response = $api->shareSecret("My hovercraft is full of eels.");
 ok( $response && $response->{created}, "Created new secret" );

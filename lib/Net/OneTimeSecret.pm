@@ -1,4 +1,4 @@
-package OneTimeSecret;
+package Net::OneTimeSecret;
 
 our $VERSION = "0.01";
 
@@ -102,13 +102,13 @@ __END__
 
 =head1 NAME
 
-OneTimeSecret - Perl interface to OneTimeSecret.com API
+Net::OneTimeSecret - Perl interface to OneTimeSecret.com API
 
 =head1 SYNOPSIS
 
- use OneTimeSecret;
+ use Net::OneTimeSecret;
 
- $api = OneTimeSecret->new( <your customer id>, <your API key> );
+ $api = Net::OneTimeSecret->new( <your customer id>, <your API key> );
 
  $response = $api->shareSecret( "Attack at dawn" );
  $secretKey = $response->{secret_key};
@@ -147,7 +147,7 @@ with encoding or decoding of JSON.
 See https://onetimesecret.com if you don't know how it works or what it's
 for.
 
-To use, you create an api object by instantiating a OneTimeSecret using
+To use, you create an api object by instantiating a Net::OneTimeSecret using
 your customer id (which is the email address with which you signed up
 for your API account) and your api key (which you need to generate at
 https://onetimesecret.com).

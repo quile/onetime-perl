@@ -1,7 +1,7 @@
 use inc::Module::Install;
 
-name           'OneTimeSecret';
-all_from       'OneTimeSecret.pm';
+name           'Net-OneTimeSecret';
+all_from       'lib/Net/OneTimeSecret.pm';
 
 # Specific dependencies
 requires       'LWP::UserAgent';
