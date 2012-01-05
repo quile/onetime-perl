@@ -8,8 +8,11 @@ my $testApiKey  = '4dc74a03fwr9aya5qur5wa8vavo4gih1hasj6181';
 
 my $api = Net::OneTimeSecret->new( $customerId, $testApiKey );
 my $result = $api->shareSecret( 'Jazz, jazz and more jazz.',
-                   password => 'thepassword',
+                   passphrase => 'thepassword',
                    recipient => 'kyle@shoffle.com',
                    ttl => 7200,
                  );
 printf( "%s\n", $result->{secret_key} );
+
+my $secret = $api->retrieveSecret( $result->{secret_key}, passphrase => "thepassword" );
+printf( "%s\n", $secret->{value} );

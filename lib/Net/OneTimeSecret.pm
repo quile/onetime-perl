@@ -84,7 +84,7 @@ sub retrieveSecret {
     my $self = shift;
     my $key = shift;
     my $options = { @_ };
-    return $self->_post( $self->__url_for( sprintf("/secret/%s", $key) ) );
+    return $self->_post( $self->__url_for( sprintf("/secret/%s", $key) ), $options );
 }
 
 sub retrieveMetadata {
