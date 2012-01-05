@@ -4,9 +4,10 @@ use lib 'lib';
 
 use Net::OneTimeSecret;
 use utf8;
+use Data::Dumper;
 
 use common::sense;
-use Test::More tests => 10;
+use Test::More tests => 13;
 
 my $customerId  = 'apitest-perl@onetimesecret.com';
 my $testApiKey  = 'df0de769899e5464cb70754ea4494aec1b7de7fb';
@@ -28,15 +29,14 @@ ok( $status && $status->{status} eq 'nominal', "Status OK" );
 my $gen = $api->generateSecret();
 ok( $gen && $gen->{value}, "Generated secret" );
 
+my $metadata = $api->retrieveMetadata( $metadataKey );
+ok( $metadata && $metadata->{created}, "Metadata retrieved" );
+
 my $retrieved = $api->retrieveSecret( $secretKey );
 ok( $retrieved && $retrieved->{value} eq "My hovercraft is full of eels.", "Secret retrieved successfully" );
 
 my $retrievedAgain = $api->retrieveSecret( $secretKey );
 ok( !exists $retrievedAgain->{value} && $retrievedAgain->{message} eq "Unknown secret", "Unable to retrieve message twice" );
-
-my $metadata = $api->retrieveMetadata( $metadataKey );
-ok( $metadata && $metadata->{created}, "Metadata retrieved" );
-
 
 # Let's try some unicode
 my $unicode = $api->shareSecret( "˙sʃǝǝ ɟo ʃʃnɟ sı ʇɟɐɹɔɹǝʌoɥ ʎW" );
@@ -44,7 +44,16 @@ ok( $unicode && $unicode->{created}, "Created shared secret from unicode.");
 
 my $ru = $api->retrieveSecret( $unicode->{secret_key} );
 ok( $ru && $ru->{value} eq "˙sʃǝǝ ɟo ʃʃnɟ sı ʇɟɐɹɔɹǝʌoɥ ʎW", "Retrieved unicode secret." );
-#diag Dumper($ru);
 
 $ru = $api->retrieveSecret( $unicode->{secret_key} );
 ok( $ru && $ru->{message} eq "Unknown secret", "Couldn't retrieve secret twice." );
+
+# passphrase?
+$response = $api->shareSecret( "Our chief weapon is surprise.", passphrase => "herring" );
+ok( $response && $response->{secret_key}, "Created secret with passphrase." );
+
+$retrieved = $api->retrieveSecret( $response->{secret_key} );
+ok( $retrieved && ! $retrieved->{value}, "Couldn't retrieve value of secret without passphrase." );
+
+$retrieved = $api->retrieveSecret( $response->{secret_key}, passphrase => "herring" );
+ok( $retrieved && $retrieved->{value} eq "Our chief weapon is surprise.", "Retrieved using passphrase" );
