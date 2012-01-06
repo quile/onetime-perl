@@ -4,7 +4,6 @@ use lib 'lib';
 
 use Net::OneTimeSecret;
 use utf8;
-use Data::Dumper;
 
 use common::sense;
 use Test::More tests => 13;
