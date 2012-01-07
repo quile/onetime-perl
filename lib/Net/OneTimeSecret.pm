@@ -1,6 +1,6 @@
 package Net::OneTimeSecret;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 use common::sense;
 use JSON;
@@ -123,7 +123,7 @@ Net::OneTimeSecret - Perl interface to OneTimeSecret.com API
 
 =head1 VERSION
 
-    0.02
+    0.03
 
 
 =head1 FEATURES
@@ -139,6 +139,11 @@ REST API calls.
 
 You call it with Perl data, and get back Perl data.  No messing
 with encoding or decoding of JSON.
+
+=item * Unicode
+
+Unicode, errrm, seems to work OK.
+
 
 =back
 
@@ -301,6 +306,10 @@ will need some cleaning up and bulletproofing to harden it a bit.
 =head1 BUGS
 
 Please report bugs relevant to C<OneTimeSecret> to E<lt>info[at]kyledawkins.comE<gt>.
+
+=head1 CONTRIBUTING
+
+The github repository is at https://quile@github.com/quile/onetime-perl.git
 
 
 =head1 SEE ALSO
